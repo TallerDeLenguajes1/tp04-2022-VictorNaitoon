@@ -13,6 +13,7 @@ void cargarTareas(TAREAS **listaDeTareas, int numeroDeTareas);
 void verificarTareas(TAREAS **listadoDeTareas, TAREAS **RealizarTareas, int numeroDeTareas);
 void mostrarTareas(TAREAS **TareasPendientes, TAREAS **TareasRealizadas, int numeroDeTrareas);
 
+
 int main(){
     srand(time(NULL));
     TAREAS **listadoDeTarea, **tareasARealizar;
@@ -33,6 +34,24 @@ int main(){
     verificarTareas(listadoDeTarea, tareasARealizar, cantidadDeTareas);
     mostrarTareas(listadoDeTarea, tareasARealizar, cantidadDeTareas);
 
+
+    for (int i = 0; i < cantidadDeTareas; i++){
+        if (listadoDeTarea[i] !=  NULL){
+            free(listadoDeTarea[i]->Description);
+        }
+        free(listadoDeTarea[i]);
+    }
+
+    for (int  i = 0; i < cantidadDeTareas; i++){
+        if (tareasARealizar[i] != NULL){
+            free(tareasARealizar[i]->Description);
+        }
+        free(tareasARealizar[i]);
+    }
+    
+    free(listadoDeTarea);
+    free(tareasARealizar);
+
     getchar();
     getchar();
     return 0;
@@ -44,20 +63,19 @@ void cargarTareas(TAREAS **listaDeTareas, int numeroDeTareas){
 
         listaDeTareas[i] = (TAREAS *)malloc(sizeof(TAREAS)*1);
 
-        numeroRandom = rand()%numeroDeTareas + 1;
-        listaDeTareas[i]->TareaID = numeroRandom;
+        listaDeTareas[i]->TareaID = i + 1;
 
         listaDeTareas[i]->Description = (char *)malloc(100*sizeof(char)+1);
         numeroRandom = rand()%3;
         switch (numeroRandom){
         case 0:
-            strcpy(listaDeTareas[i]->Description,"SOLDAR");
+            strcpy(listaDeTareas[i]->Description,"Reclutar nuevos profesionales");
             break;
         case 1:
-            strcpy(listaDeTareas[i]->Description,"MANTENIMIENTO");
+            strcpy(listaDeTareas[i]->Description,"Mantenimiento de maquinas industriales");
             break;
         case 2:
-            strcpy(listaDeTareas[i]->Description,"ELECTRICIDAD");
+            strcpy(listaDeTareas[i]->Description,"Conexion de luz en la industria");
             break;
         }
 
