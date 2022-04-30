@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 
 typedef struct Tarea{
     int TareaID;
@@ -12,6 +13,8 @@ typedef struct Tarea{
 void cargarTareas(TAREAS **listaDeTareas, int numeroDeTareas);
 void verificarTareas(TAREAS **listadoDeTareas, TAREAS **RealizarTareas, int numeroDeTareas);
 void mostrarTareas(TAREAS **TareasPendientes, TAREAS **TareasRealizadas, int numeroDeTrareas);
+void busquedaPorPalabra(TAREAS **listadoDeTareas, int numeroDeTareas, char *palabraClave);
+void busquedaPorId(TAREAS **listadoDeTareas, int numeroDeTareas, int idDeLaTareaBuscada);
 
 
 int main(){
@@ -23,17 +26,44 @@ int main(){
     scanf("%d",&cantidadDeTareas);
 
     listadoDeTarea = (TAREAS **)malloc(cantidadDeTareas*sizeof(TAREAS *));
-    tareasARealizar = (TAREAS **)malloc(cantidadDeTareas*sizeof(TAREAS *));
 
     cargarTareas(listadoDeTarea,cantidadDeTareas);
+
+    //BUSQUEDA POR PALABRA EN RAMA2
+    char *palabraClave, *Buff;
+    Buff = (char *)malloc(100*sizeof(char));
+
+    printf("\nIngrese la palabra clave que desea buscar: ");
+    fflush(stdin);
+    gets(Buff);
+
+    palabraClave = (char *)malloc(strlen(Buff)+1*sizeof(char));
+    strcpy(palabraClave, Buff);
+
+    busquedaPorPalabra(listadoDeTarea, cantidadDeTareas, palabraClave);
+    free(Buff);
+    free(palabraClave);
+    //////////////////////////////////////////////////////////////////
+
+    //BUSQUEDA POR ID EN RAMA MASTER
+    int idRequerido;
+
+    printf("\nIngrese el id correspondiente de la tarea que desea buscar: ");
+    fflush(stdin);
+    scanf("%d",&idRequerido);
+
+    busquedaPorId(listadoDeTarea, cantidadDeTareas, idRequerido);
+    //////////////////////////////////////////////////////////////////
+    
+    tareasARealizar = (TAREAS **)malloc(cantidadDeTareas*sizeof(TAREAS *));
 
     for (int i = 0; i < cantidadDeTareas; i++){
         tareasARealizar[i] = NULL;
     }
     
     verificarTareas(listadoDeTarea, tareasARealizar, cantidadDeTareas);
-    mostrarTareas(listadoDeTarea, tareasARealizar, cantidadDeTareas);
-
+    mostrarTareas(listadoDeTarea, tareasARealizar, cantidadDeTareas); 
+    
 
     for (int i = 0; i < cantidadDeTareas; i++){
         if (listadoDeTarea[i] !=  NULL){
@@ -116,4 +146,30 @@ void mostrarTareas(TAREAS **TareasPendientes, TAREAS **TareasRealizadas, int num
             printf("\nDuracion de la tarea: %d horas",TareasRealizadas[i]->Duracion);
         }
     }
+}
+
+void busquedaPorPalabra(TAREAS **listadoDeTareas, int numeroDeTareas, char *palabraClave){
+    for (int i = 0; i < numeroDeTareas; i++){
+        if (strstr(listadoDeTareas[i]->Description, palabraClave) != NULL){
+            printf("\n------ TAREA ENCONTRADA ------");
+            printf("\nID de la tarea: %d",listadoDeTareas[i]->TareaID);
+            printf("\nDescripcion de la tarea: %s",listadoDeTareas[i]->Description);
+            printf("\nDuracion de la tarea: %d Horas\n",listadoDeTareas[i]->Duracion);
+            return;
+        } 
+    }
+    printf("\nNo se encontro ninguna tarea relacionada con la palabra que usted introdujo\n");
+}
+
+void busquedaPorId(TAREAS **listadoDeTareas, int numeroDeTareas, int idDeLaTareaBuscada){
+    for (int i = 0; i < numeroDeTareas; i++){
+        if (listadoDeTareas[i]->TareaID == idDeLaTareaBuscada){
+            printf("\n------ TAREA ENCONTRADA POR ID --------");
+            printf("\nID de la tarea: %d",listadoDeTareas[i]->TareaID);
+            printf("\nDescripcion de la tarea: %s",listadoDeTareas[i]->Description);
+            printf("\nDuracion de la tarea: %d Horas\n",listadoDeTareas[i]->Duracion);
+            return;
+        }
+    }
+    printf("\nNo se encontro ninguna tarea con ese numero de ID\n");
 }
